@@ -1,0 +1,21 @@
+RAG:检索、增强和生成，主要有两条路线
+- 离线处理：向私有知识库（向量存储）源源不断添加私有知识文档
+    - 向知识库添加来自模型训练完成之后的知识文档
+    - 向模型添加私有知识文档
+    - 给出模型参考资料，规避模型幻觉
+- 在线处理： 用户提问会先基于私有知识库做检索，获取参考资料， 同步组装新提示词询问大模型获取结果
+
+
+本项目包含的代码文件：
+    chat_history
+    chroma_db
+    data
+
+    app_file_upload.py
+    app_qa.py
+    config_data.py
+    file_history_store.py
+    knowledge_base.py
+    rag.py
+    vector_stores.py
+
