@@ -27,16 +27,19 @@ embedding_name = "text-embedding-v4"
 
 # 历史会话存储
 chat_store_path = r".\chat_history"
+
+
 config = {
     "configurable": {
-        "session_id": "user_001"
+        "session_id": "user_003"
     }
 }
 
-a = {'input': {'input': '我身高175，体重55公斤，推荐我什么尺码的衣服？', 'history': []},
-     'history': {'input': '我身高175，体重55公斤，推荐我什么尺码的衣服？', 'history': []},
-     'context': "[文档知识:身高：155-165cm， 体重：75-95 斤，建议尺码S。\n身高：160-170cm， 体重：90-115斤，建议尺码M。\n身高：165-175cm， 体重：115-135斤，建议尺码L。\n身高：170-178cm， 体重：130-150斤，建议尺码XL。\n身高：175-182cm， 体重：145-165斤，建议尺码2XL。\n身高：178-185cm， 体重：160-180斤，建议尺码3XL。\n身高：180-190cm， 体重：180-210斤，建议尺码4XL。\n身高：190cm+，体重：210斤+，建议尺码5XL。, medata{'source': '尺码推荐.txt', 'operator': 'deepseek', 'create_time': '2026-03-31 11:01:04'}\n]"
-     }
+# MongoDB数据库配置文件
+
+mongodb_name = r"chat_histories"
+mongodb_host = "localhost"
+mongodb_port = 27017
 
 
 

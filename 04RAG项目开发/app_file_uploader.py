@@ -37,6 +37,8 @@ if uploader_file is not None:
     # .write 网页中显示正常大小的文本
     st.write(f"格式：{file_type}| 大小：{round(file_size, 2)} KB")
 
+
+
     # getvalue() 获取字节数据 需要解码为字符串
     text = uploader_file.getvalue().decode("utf-8")
     with st.spinner("文件加载中..."):
