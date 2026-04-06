@@ -1,24 +1,13 @@
 import time
-from rag import RadService
+from rag import RagService
 import streamlit as st
 import config_data
 # 标题
 st.title("奇迹与你")
 st.divider()  # 分隔符
 
-# 流式储存器
-# content_list = []
-
-
-# def capture_stream(res, content_list):
-#     for chunk in res:
-#         if chunk.content:
-#             content_list.append(chunk.content)
-#     yield chunk
-
-
 if "rag" not in st.session_state:
-    st.session_state["rag"] = RadService()
+    st.session_state["rag"] = RagService()
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "你好，有什么可以帮到你的吗？"}]

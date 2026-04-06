@@ -6,7 +6,7 @@
 每当 web 页面内容发生变化，本页代码重新执行
 问题：1、状态丢失怎么解决？
         streamlit自带了session_state消息存放
-     2、想要删除知识库只知识怎么办？
+     2、想要删除知识库 知识怎么办？
 """
 import streamlit as st
 import time

@@ -5,11 +5,16 @@
 # MD5数据存放地址
 md5_path = "./md5.text"
 
+# redis 服务
+redis_host = "localhost"
+redis_password = ""
+redis_port = 6379
+redis_db = 0
+
 # chroma 数据存放
-# collection_name = "rag_test"
-collection_name = "rag_test_sister"
+collection_name = "rag_test"
 # persist_directory = "./chroma_db_test"
-persist_directory = "./chroma_db_test_sister"
+persist_directory = "./chroma_db_test_0"
 
 # spliter 相关参数
 chunk_size = 500
@@ -31,7 +36,7 @@ chat_store_path = r".\chat_history"
 
 config = {
     "configurable": {
-        "session_id": "user_003"
+        "session_id": "user_000"
     }
 }
 

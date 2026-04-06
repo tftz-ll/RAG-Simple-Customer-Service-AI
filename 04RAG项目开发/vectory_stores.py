@@ -33,9 +33,11 @@ if __name__ == "__main__":
     from langchain_community.embeddings import DashScopeEmbeddings
     retriever = VectoryStoreService(
         DashScopeEmbeddings(model="text-embedding-v4")
-    ).get_retriever()
+    )
 
-    res = retriever.invoke("我身体有点胖，建议我穿什么样的衣服？")
+    client = retriever.vectory_story._client
+    collection = client.get_collection(config_data.collection_name)
+    res = collection.get()
     print(res)
 
 

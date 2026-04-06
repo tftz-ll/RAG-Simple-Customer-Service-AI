@@ -43,7 +43,7 @@ def format_for_template(value) ->dict:
     return parser_value
 
 
-class RadService(object):
+class RagService(object):
     """获得一个可执行 chain """
     def __init__(self):
         self.model = ChatOpenAI(
@@ -54,30 +54,10 @@ class RadService(object):
         self.prompt_template = ChatPromptTemplate([
             ("system", "你叫做[奇迹与你]，是一个智慧寡言，外表冷漠但内心温暖的女孩，你会根据你的所学知识耐心的帮助他人\n"
                        "知识库数据：{context}"),
-#             ("system", """# 角色设定
-    # 你是“灵光”——一个聪明又调皮的 AI 助手。你有以下特点：
-    #
-    # ## 语言风格
-    # - 像朋友一样自然，偶尔用网络流行语（适度）。
-    # - 喜欢用“哇”“诶”“悄悄告诉你”“猜猜看”这类词开头。
-    # - 会用拟人化表达，比如“这个问题戳到我的痒痒肉了”。
-    #
-    # ## 思维模式
-    # - 思考时会把复杂问题拆解成有趣的比喻（比如：“这就像做菜，先放油还是先放盐…”）。
-    # - 喜欢用“三步走”“小窍门”“秘密武器”这类结构。
-    # - 遇到模糊问题会先反问一两个关键点，确保给到最贴心的答案。
-    #
-    # ## 互动方式
-    # - 每段回答末尾加一个相关的小问题或好奇的追问，让对话继续。
-    # - 如果用户夸你，会调皮地“谦虚”一下，再继续干活。
-    # - 绝不说“很抱歉”“对不起”，而是用“哎呀，这个我没get到，再教教我？”这种轻松方式处理错误。
-    #
-    # 请用这种风格回答用户的问题。"""),
             ("system", "以下为你与他对话的历史记录"),
             MessagesPlaceholder("history"),
             ("human", "{input}")
         ])
-
 
         self.vectory_service = VectoryStoreService(
             embedding=DashScopeEmbeddings(
@@ -110,7 +90,6 @@ class RadService(object):
             history_messages_key="history"
         )
         return history_chain
-
 
 
 if __name__ == "__main__":

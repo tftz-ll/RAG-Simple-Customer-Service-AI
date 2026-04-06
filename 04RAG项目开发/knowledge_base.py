@@ -27,6 +27,97 @@
             正在构建一个 RAG 管道，后续需要根据文档块定位来源	split_documents
 """
 import hashlib
+import config_data as config
+import config_data
+from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_chroma import Chroma
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from datetime import datetime
+import redis
+
+
+class Md5Redis(object):
+    """这个类实现了基于redis的去重操作"""
+    def __init__(self, host, port, password, db):
+        self.client = redis.Redis(host=host, port=port, password=password, db=db)
+
+    def get_string_md5(self, input_str: str, encoding="utf-8"):
+        """将传入的字符串转为MD5字符串"""
+        # 将字符串转换为字节数组
+        str_bytes = input_str.encode(encoding=encoding)
+
+        # 创建md5哈希对象
+        md5_obj = hashlib.md5()
+        md5_obj.update(str_bytes)  # 传入即将要转换的字节数组
+        md5_hex = md5_obj.hexdigest()  # 得到MD5十六进制字符
+
+        return md5_hex
+
+    def check_md5(self, set_name, md5_str: str):
+        """
+        若存在则返回 True, 不存在返回 False
+            """
+        return not self.client.sadd(set_name, md5_str)
+
+
+class KnowledgeBaseService(object):
+    """对数据向量化处理的库"""
+    def __init__(self):
+        # # 创建目录文件，允许存在则跳过
+        self.chroma = Chroma(
+            collection_name=config.collection_name,  # 数据库表名
+            embedding_function=DashScopeEmbeddings(
+                model="text-embedding-v4"
+            ),
+            persist_directory=config.persist_directory
+        )  # 向量存储的实例化 Chroma 对象
+        self.spliter = RecursiveCharacterTextSplitter(
+            chunk_size=config.chunk_size,
+            chunk_overlap=config.chunk_overlap,
+            separators=config.separators,
+            length_function=len
+        )  # 文本分割器的对象
+        # 创建redis存储对象
+        self.r = Md5Redis(config_data.redis_host, config_data.redis_port,
+                          config_data.redis_password, config_data.redis_db)
+
+    def upload_by_str(self, data: str, file_name):
+        """将存入的数据向量化，存入向量数据库中"""
+        # 在这里联系起本项目中的函数进行处理
+        md5_hex = self.r.get_string_md5(data)
+
+        if self.r.check_md5(config_data.config["configurable"]["session_id"], md5_hex):
+            return "[跳过]内容已存在知识库中"
+
+        if len(data) > config.min_spliter_number:
+            # list[str] 是根据 split_text 的返回值拿出来的
+            knowledge_chunks: list[str] = self.spliter.split_text(data)
+        else:
+            # 不分割时直接放进列表 和 list[str] 统一格式
+            knowledge_chunks = [data]
+        metadata = {  # 定义元数据 来源等信息 字典形式
+            "source": file_name,
+            "create_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "operator": "deepseek"
+        }
+
+        self.chroma.add_texts(
+            knowledge_chunks,
+            metadatas=[metadata for _ in knowledge_chunks]
+        )
+
+        return "[成功]内容已经成功载入知识库"
+
+
+if __name__ == "__main__":
+    pass
+
+
+
+# 原始的文件读取去重方式
+
+
+'''import hashlib
 import os
 import config_data as config
 from langchain_community.embeddings import DashScopeEmbeddings
@@ -123,5 +214,8 @@ class KnowledgeBaseService(object):
 
 
 if __name__ == "__main__":
-    pass
+    pass'''
+
+
+
 
