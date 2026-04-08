@@ -7,6 +7,7 @@
     2、如何查看token消耗
 
 """
+from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import config_data
@@ -45,16 +46,24 @@ def format_for_template(value) ->dict:
 
 class RagService(object):
     """获得一个可执行 chain """
-    def __init__(self):
-        self.model = ChatOpenAI(
-            model=config_data.model_name,
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
-        )
+    def __init__(self, model: str):
+        """根据传入数据确定连接 ollama 还是云端模型"""
+        if model == "cloud":
+            self.model = ChatOpenAI(
+                model=config_data.cloud_model_name,
+                base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+                output_version="responses/v1",
+            )
+        elif model == "native":
+            self.model = ChatOllama(
+                model=config_data.native_model_name,
+                reasoning=True,
+            )
 
         self.prompt_template = ChatPromptTemplate([
             ("system", "你叫做[奇迹与你]，是一个智慧寡言，外表冷漠但内心温暖的女孩，你会根据你的所学知识耐心的帮助他人\n"
                        "知识库数据：{context}"),
-            ("system", "以下为你与他对话的历史记录"),
+            ("system", "以下为你的对话的历史记录"),
             MessagesPlaceholder("history"),
             ("human", "{input}")
         ])
@@ -94,7 +103,7 @@ class RagService(object):
 
 if __name__ == "__main__":
 
-    chain = RadService().chain
+    chain = RagService("native").chain
     res = chain.invoke({"input": "我很欣慰，我终于能够让你从MongoDB数据库中读取信息了，不出意外的话，以后你的反应会更快，谢谢我"}, config_data.config)
     print(res.content)
 
